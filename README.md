@@ -11,6 +11,11 @@ Just compile as any other nim application
 
     nim c shelfrog.nim
 
+The release build uses these options for general optimization:
+
+    nim c -d:release --passC:-flto --passL:-flto --opt:speed --gc:orc -d:useBranchFree64 shelfrog.nim
+
+
 ## Dependencies
 Requires [suru](https://github.com/de-odex/suru) and [w8crc](https://github.com/sumatoshi/w8crc).
 
