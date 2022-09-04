@@ -5,9 +5,9 @@ import osproc
 import suru
 import sugar
 import w8crc
+import times
 
 const workingDirectory: string = "working/"
-const unknownDirectory: string = "unknown/"
 const duplicatesDirectory: string = "dupes/"
 const lookup = crc32Posix.initLookup()
 
@@ -15,11 +15,9 @@ const lookup = crc32Posix.initLookup()
 proc getTimeDate(path: string): seq[string] =
     var exif: string = execProcess(fmt"exiftool.exe -T -d %Y-%m-%d -q -q -m -p '$datetimeoriginal' {path}")
     if exif == "\'-\'\n" or "Error" in exif:
-        echo "Cannot find original date/time in exif metadata, using file modified date/time."
-        exif = execProcess(fmt"exiftool.exe -T -d %Y-%m-%d -q -q -m -p '$filemodifydate' {path}")
-        if exif == "\'-\'\n" or "Error" in exif:
-            echo fmt"Couldn't get date/time, moving into \'{unknownDirectory}\'"
-            return @["unknown"]
+        echo fmt"Cannot find original date/time in exif metadata for {path}, using file modified date/time."
+        let fileInfo = getFileInfo(path)
+        exif = format(fileInfo.lastWriteTime, "yyyy-MM-dd")
     return exif.replace("'", "").replace("\n", "").split('-')
 
 proc crcCheck(file1: string, file2: string): bool =
@@ -32,7 +30,7 @@ proc finalDestination(timedate: seq[string], path: string): tuple[
         src: string, dest: string] =
     let splitFile = splitFile(path)
     var filename = splitFile.name
-    let destDir = if timedate[0] == "unknown": unknownDirectory else: fmt"{timedate[0]}/{timedate[1]}/{timedate[2]}"
+    let destDir = fmt"{timedate[0]}/{timedate[1]}/{timedate[2]}"
     createDir(destDir)
 
     while fileExists(fmt"{destDir}/{filename}{splitFile.ext}"):
