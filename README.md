@@ -5,6 +5,10 @@ Organize your photos based on when it was shot (but also any other file because 
 
 **Currently works only on Windows** linux support will come shortly.
 
+# Use
+
+Put your files inside a folder called working (or whatever you set workingDirectory to) and run the application just outside the folder.
+
 # Build
 
 Just compile as any other nim application
