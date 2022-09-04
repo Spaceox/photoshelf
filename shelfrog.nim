@@ -15,7 +15,7 @@ const lookup = crc32Posix.initLookup()
 proc getTimeDate(path: string): seq[string] =
     var exif: string = execProcess(fmt"exiftool.exe -T -d %Y-%m-%d -q -q -m -p '$datetimeoriginal' {path}")
     if exif == "\'-\'\n" or "Error" in exif:
-        echo fmt"Cannot find original date/time in exif metadata for {path}, using file modified date/time."
+        echo fmt"Original time/date doesn't exist in {path}, using file modified date/time."
         let fileInfo = getFileInfo(path)
         exif = format(fileInfo.lastWriteTime, "yyyy-MM-dd")
     return exif.replace("'", "").replace("\n", "").split('-')
