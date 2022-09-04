@@ -1,6 +1,8 @@
 nimcache/
 nimblecache/
 htmldocs/
-*.jpg
 working/
+unknown/
+dupes/
 20*/
+*.exe
