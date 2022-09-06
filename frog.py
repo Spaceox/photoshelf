@@ -48,13 +48,13 @@ with progress:
             if "Exif.Photo.DateTimeOriginal" in data:
                 date = data["Exif.Photo.DateTimeOriginal"].split(" ")[0].split(":")
         except RuntimeError as e:
-            progress.console.log(f"Exception occured:\n{e.args}")
+            print(f"Exception occured:\n{e.args}")
             data = {}
 
         if data != {} and "Exif.Photo.DateTimeOriginal" in data:
             date = data["Exif.Photo.DateTimeOriginal"].split(" ")[0].split(":")
         else:
-            progress.console.log(
+            print(
                 f"Couldn't get exif data for file {file}, using last modified date instead."
             )
             date = shelf.getModDate(file).split(":")
