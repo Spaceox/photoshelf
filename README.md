@@ -3,6 +3,8 @@
 
 Organize your photos based on when it was shot (but also any other file because as a fallback it uses last modified date).
 
+This is an old version, and won't be touched anymore. It was kept because the new version is completely different and I wanted to keep this.
+
 **Currently works only on Windows** linux support will come shortly.
 
 # Use
