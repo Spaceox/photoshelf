@@ -25,7 +25,7 @@ First of all you should install the dependencies just below this part.
 
 Then build the nim module as the nimpy instruction say you should (add additional switches if you want, for example `-d:useBranchFree64` speeds up w8crc processing crc32 on x64 machines)
   
-    nim c --app:lib --out:shelf.pyd --threads:on --tlsEmulation:off --passL:-static shelfrog # windows
+    nim c --app:lib --out:shelf.pyd --threads:on --tlsEmulation:off --passL:-static shelf # windows
     nim c --app:lib --out:shelf.so --threads:on shelf # linux
 
 The releases are compiled with:
