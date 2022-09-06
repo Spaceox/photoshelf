@@ -42,7 +42,7 @@ proc getModDate(file: string): string {.exportpy.} =
 # i could just move everything in the python script, but i'm lazy and this should be a bit faster(?)
 # just realized this makes it less customizable too, i'm probably the only one who will use this so ehh
 proc moveFile(file: string, folder0: string, folder1: string, folder2: string,
-    dupeDir: string) {.exportpy.} =
+    dupeDir: string, echoMore: bool) {.exportpy.} =
 
     let
         splitPath = splitFile(file)
@@ -57,11 +57,11 @@ proc moveFile(file: string, folder0: string, folder1: string, folder2: string,
 
     while fileExists(destPath):
         if crcCheck(originalPath, destPath) and not (dupeDir in destPath):
-            echo fmt"{originalPath} is the same as {destPath}, moving into {dupeDir}"
+            if echoMore: echo fmt"{originalPath} is the same as {destPath}, moving into {dupeDir}"
             destPath = fmt"{dupeDir}/{filename}{splitPath.ext}"
             continue
         else:
-            echo fmt"{destPath} already exists, renaming to {filename}_duplicate{splitPath.ext}"
+            if echoMore: echo fmt"{destPath} already exists, renaming to {filename}_duplicate{splitPath.ext}"
             moveFile(fmt"{originalPath}",
                 fmt"{splitPath.dir}/{filename}_duplicate{splitPath.ext}")
             filename = fmt"{filename}_duplicate"

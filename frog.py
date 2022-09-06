@@ -7,6 +7,8 @@ workingDir = "working/"
 duplicateDir = "dupes/"
 skippedFileTypes = [".db", ".json", ".info"]  # These files are skipped
 
+printMore = False
+
 # Pyexiv2 settings
 pyexiv2.set_log_level(
     4
@@ -48,15 +50,17 @@ with progress:
             if "Exif.Photo.DateTimeOriginal" in data:
                 date = data["Exif.Photo.DateTimeOriginal"].split(" ")[0].split(":")
         except RuntimeError as e:
-            print(f"Exception occured:\n{e.args}")
+            if printMore:
+                print(f"Exception occured:\n{e.args}")
             data = {}
 
         if data != {} and "Exif.Photo.DateTimeOriginal" in data:
             date = data["Exif.Photo.DateTimeOriginal"].split(" ")[0].split(":")
         else:
-            print(
-                f"Couldn't get exif data for file {file}, using last modified date instead."
-            )
+            if printMore:
+                print(
+                    f"Couldn't get exif data for file {file}, using last modified date instead."
+                )
             date = shelf.getModDate(file).split(":")
 
         progress.update(process, advance=0.5)
@@ -65,5 +69,5 @@ with progress:
         # folder1 is the second folder, by default it's date[1] (month)
         # folder2 is well the third folder, by default it's date[2] (day)
         # so the default folder structure is yyyy/mm/dd
-        shelf.moveFile(file, date[0], date[1], date[2], duplicateDir)
+        shelf.moveFile(file, date[0], date[1], date[2], duplicateDir, printMore)
         progress.update(process, advance=0.5)
