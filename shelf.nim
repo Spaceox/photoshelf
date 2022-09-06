@@ -66,5 +66,6 @@ proc moveFile(file: string, folder0: string, folder1: string, folder2: string,
                 fmt"{splitPath.dir}/{filename}_duplicate{splitPath.ext}")
             filename = fmt"{filename}_duplicate"
             originalPath = fmt"{splitPath.dir}/{filename}{splitPath.ext}"
+            destPath = fmt"{destDir}/{filename}{splitPath.ext}"
 
     moveFile(originalPath, destPath)
