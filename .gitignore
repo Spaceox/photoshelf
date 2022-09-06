@@ -1,8 +1,9 @@
-nimcache/
 nimblecache/
+.mypy_cache/
+nimcache/
 htmldocs/
+.vscode/
 working/
-unknown/
 dupes/
 20*/
 *.exe
