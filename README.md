@@ -23,15 +23,15 @@ An all in one package should come soon-ish, when I understand how to use nuitka
 
 First of all you should install the dependencies just below this part.
 
-Then build the nim module as the nimpy instruction say you should (add additional switches if you want, for example `-d:useBranchFree64` speeds up w8crc processing crc32 on x64 machines)
+Then build the nim module as the nimpy instruction say you should (add additional switches if you want, for example `-d:lto` creates smaller files)
   
     nim c --app:lib --out:shelf.pyd --threads:on --tlsEmulation:off --passL:-static shelf # windows
     nim c --app:lib --out:shelf.so --threads:on shelf # linux
 
 The releases are compiled with:
 
-    nim c -d:release -d:strip -d:useBranchFree64 -d:lto --opt:speed  --gc:arc  --app:lib --out:shelf.pyd --threads:on --tlsEmulation:off --passL:-static shelf #windows
-    nim c -d:release -d:strip -d:useBranchFree64 -d:lto --opt:speed  --gc:arc  --app:lib --out:shelf.so --threads:on shelf #linux
+    nim c -d:release -d:strip -d:lto --opt:speed  --gc:arc  --app:lib --out:shelf.pyd --threads:on --tlsEmulation:off --passL:-static shelf #windows
+    nim c -d:release -d:strip -d:lto --opt:speed  --gc:arc  --app:lib --out:shelf.so --threads:on shelf #linux
   
 Then you just need to run `frog.py` to run the application
 
@@ -40,7 +40,7 @@ Then you just need to run `frog.py` to run the application
 `shelf.nim` requires:
 
  - [Nim](https://nim-lang.org/)
- - [w8crc](https://github.com/sumatoshi/w8crc)
+ - [crc32](https://github.com/juancarlospaco/nim-crc32)
  - [nimpy](https://github.com/yglukhov/nimpy)
 
 `frog.py` requires:

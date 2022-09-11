@@ -1,16 +1,30 @@
 import os
 import strformat
-import strutils
 import sugar
-import w8crc
+import strutils
+#import w8crc
+import crc32
 import times
 import nimpy
 
 # Lookup table for crc32
-const lookup = crc32Posix.initLookup()
+#const lookup = crc32Posix.initLookup()
+
+# echoMore? (aka printMore)
+var echoMore: bool
+
+# Sets echoMore from python
+proc setEchoMore(printMore: bool): void {.exportpy.} =
+    echoMore = printMore
+
+# Nicer log
+proc niceishLogText(text: string): void {.exportpy.} =
+    if echoMore: echo "\u001b[2m[" & getTime().format("HH:mm:ss") &
+            "]\u001b[0m\u001b[93m " & text & "\u001b[0m"
 
 # Get list of files in folder and quit if workdir doesn't exist or is empty
 proc getFiles(workDir: string, dupeDir: string): seq {.exportpy.} =
+
     if dirExists(workDir) != true:
         echo fmt"Cannot find working directory, make sure it's '{workDir}'. Exiting..."
         quit(QuitFailure)
@@ -27,12 +41,6 @@ proc getFiles(workDir: string, dupeDir: string): seq {.exportpy.} =
     else:
         return files
 
-# Self-explanatory duplicate file check using CRC32 (POSIX)
-# i've exported it to python in case someone wants to edit the python file and use it there but how it's made rn, it's not needed
-proc crcCheck(file1: string, file2: string): bool {.exportpy.} =
-    return file1.crcFromFile(crc32Posix, lookup) == file2.crcFromFile(
-            crc32Posix, lookup)
-
 # Get last modification date of a file
 # why didn't i put this in the python script? oh well, i'll keep it here
 proc getModDate(file: string): string {.exportpy.} =
@@ -42,7 +50,7 @@ proc getModDate(file: string): string {.exportpy.} =
 # i could just move everything in the python script, but i'm lazy and this should be a bit faster(?)
 # just realized this makes it less customizable too, i'm probably the only one who will use this so ehh
 proc moveFile(file: string, folder0: string, folder1: string, folder2: string,
-    dupeDir: string, echoMore: bool) {.exportpy.} =
+    dupeDir: string) {.exportpy.} =
 
     let
         splitPath = splitFile(file)
@@ -54,14 +62,20 @@ proc moveFile(file: string, folder0: string, folder1: string, folder2: string,
         destPath = fmt"{destDir}/{filename}{splitPath.ext}"
 
     createDir(destDir)
+    let file1crc = originalPath.dup(crc32FromFile) #.crcFromFile(crc32Posix, lookup).int64.toHex(8)
+    niceishLogText(fmt"Source file CRC is {file1crc}")
 
     while fileExists(destPath):
-        if crcCheck(originalPath, destPath) and not (dupeDir in destPath):
-            if echoMore: echo fmt"{originalPath} is the same as {destPath}, moving into {dupeDir}"
-            destPath = fmt"{dupeDir}/{filename}{splitPath.ext}"
+        if not (dupeDir in destPath):
+            let file2crc = destPath.dup(
+                    crc32FromFile) #.crcFromFile(crc32Posix, lookup).int64.toHex(8)
+            niceishLogText(fmt"Destination file CRC is {file2crc}")
+            if file1crc == file2crc:
+                niceishLogText(fmt"{originalPath} is the same as {destPath}, moving into {dupeDir}")
+                destPath = fmt"{dupeDir}/{filename}{splitPath.ext}"
             continue
         else:
-            if echoMore: echo fmt"{destPath} already exists, renaming to {filename}_duplicate{splitPath.ext}"
+            niceishLogText(fmt"{destPath} already exists, renaming to {filename}_duplicate{splitPath.ext}")
             moveFile(fmt"{originalPath}",
                 fmt"{splitPath.dir}/{filename}_duplicate{splitPath.ext}")
             filename = fmt"{filename}_duplicate"
