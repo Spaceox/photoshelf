@@ -20,15 +20,45 @@ def getDate(image: IOBase) -> list[str]:
             if (
                 "Exif.Photo.DateTimeOriginal" in exif
                 and exif["Exif.Photo.DateTimeOriginal"] != ""
+                and exif["Exif.Photo.DateTimeOriginal"] != "0000:00:00 00:00:00"
             ):
+
                 return list(
                     exif["Exif.Photo.DateTimeOriginal"].split(" ")[0].split(":")
                 )
             else:
-                shelf.niceishLogText(
-                    f"Date doesn't exist in {image}, using last modified date instead."
-                )
-                return list(shelf.getModDate(image).split(":"))
+                if (
+                    "Exif.Image.DateTime" in exif
+                    and exif["Exif.Image.DateTime"] != ""
+                    and exif["Exif.Image.DateTime"] != "0000:00:00 00:00:00"
+                ):
+
+                    shelf.niceishLogText(
+                        f"DateTimeOriginal doesn't exist in {image}, using with DateTime."
+                    )
+                    return list(exif["Exif.Photo.DateTime"].split(" ")[0].split(":"))
+                else:
+                    if (
+                        "Exif.Image.DateTimeDigitized" in exif
+                        and exif["Exif.Image.DateTimeDigitized"] != ""
+                        and exif["Exif.Image.DateTimeDigitized"]
+                        != "0000:00:00 00:00:00"
+                    ):
+
+                        shelf.niceishLogText(
+                            f"DateTimeOriginal doesn't exist in {image}, using with DateTimeDigitized."
+                        )
+                        return list(
+                            exif["Exif.Photo.DateTimeDigitized"]
+                            .split(" ")[0]
+                            .split(":")
+                        )
+                    else:
+                        shelf.niceishLogText(
+                            f"DateTimeOriginal doesn't exist in {image}, using with last modified date."
+                        )
+                        return list(shelf.getModDate(image).split(":"))
+
     except RuntimeError as e:
         shelf.niceishLogText(
             f"""
