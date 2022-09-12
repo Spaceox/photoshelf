@@ -1,6 +1,4 @@
 
-  
-
 # shelfrog
 
 Organize your photos and videos based on exif data (but also any other file because as a fallback it uses last modified date).
@@ -17,21 +15,29 @@ Organize your photos and videos based on exif data (but also any other file beca
 6. Put your files inside a folder called working (or whatever you set workingDirectory to) 
 7. Run `frog.py` just outside the working folder
 
-An all in one package should come soon-ish, when I understand how to use nuitka
 
 # Build
+
+## Semi-automatically
+1. Install nim (python insn't needed for the build but for the execution)  
+2. Download the repo
+3. Execute  `chmod +x reqinstall.sh` and `chmod +x build.sh`  
+4. Run `reqinstall.sh` (this is only needed the first time to install the requirements)  
+5. Finally start `build.sh`  
+
+## Manually
 
 First of all you should install the dependencies just below this part.
 
 Then build the nim module as the nimpy instruction say you should (add additional switches if you want, for example `-d:lto` creates smaller files)
   
-    nim c --app:lib --out:shelf.pyd --threads:on --tlsEmulation:off --passL:-static shelf # windows
-    nim c --app:lib --out:shelf.so --threads:on shelf # linux
+    nim c --app:lib --out:shelf.pyd shelf # windows
+    nim c --app:lib --out:shelf.so shelf # linux
 
-The releases are compiled with:
+The releases are compiled with (remove `-d:mingw` if compiling on windows instad of linux):
 
-    nim c -d:release -d:strip -d:lto --opt:speed  --gc:arc  --app:lib --out:shelf.pyd --threads:on --tlsEmulation:off --passL:-static shelf #windows
-    nim c -d:release -d:strip -d:lto --opt:speed  --gc:arc  --app:lib --out:shelf.so --threads:on shelf #linux
+    nim c --cpu:amd64 -d:mingw -d:release -d:strip -d:lto --opt:speed --gc:orc --app:lib --out:shelf.pyd shelf #windows
+    nim c --cpu:amd64 --os:linux -d:release -d:strip -d:lto --opt:speed --gc:orc --app:lib --out:shelf.so shelf #linux
   
 Then you just need to run `frog.py` to run the application
 
