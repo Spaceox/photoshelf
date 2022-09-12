@@ -3,7 +3,7 @@
 
 Organize your photos and videos based on exif data (but also any other file because as a fallback it uses last modified date).
 
-**Currently tested only on Windows, Linux hasn't been tested yet.**
+**Currently tested only on Windows and Linux (specifically Ubuntu (Preview) on WSL).**
 
 # Use
 
@@ -21,9 +21,9 @@ Organize your photos and videos based on exif data (but also any other file beca
 ## Semi-automatically
 1. Install nim (python insn't needed for the build but for the execution)  
 2. Download the repo
-3. Execute  `chmod +x reqinstall.sh` and `chmod +x build.sh`  
-4. Run `reqinstall.sh` (this is only needed the first time to install the requirements)  
-5. Finally start `build.sh`  
+3. Run `chmod +x reqinstall.sh` and `reqinstall.sh` (this is only needed the first time to install the requirements)  
+**Note: this script works only on Ubuntu (and probably other debian-based distros)**  
+4. Finally start `chmod +x build.sh` and `build.sh`  
 
 ## Manually
 
