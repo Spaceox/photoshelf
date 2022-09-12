@@ -66,14 +66,11 @@ proc moveFile(file: string, folder0: string, folder1: string, folder2: string,
     niceishLogText(fmt"Source file CRC is {file1crc}")
 
     while fileExists(destPath):
-        if not (dupeDir in destPath):
-            let file2crc = destPath.dup(
-                    crc32FromFile) #.crcFromFile(crc32Posix, lookup).int64.toHex(8)
-            niceishLogText(fmt"Destination file CRC is {file2crc}")
-            if file1crc == file2crc:
-                niceishLogText(fmt"{originalPath} is the same as {destPath}, moving into {dupeDir}")
-                destPath = fmt"{dupeDir}/{filename}{splitPath.ext}"
-            continue
+        let file2crc = destPath.dup(crc32FromFile) #.crcFromFile(crc32Posix, lookup).int64.toHex(8)
+        niceishLogText(fmt"Destination file CRC is {file2crc}")
+        if not (dupeDir in destPath) and file1crc == file2crc:
+            niceishLogText(fmt"{originalPath} is the same as {destPath}, moving into {dupeDir}")
+            destPath = fmt"{dupeDir}/{filename}{splitPath.ext}"
         else:
             niceishLogText(fmt"{destPath} already exists, renaming to {filename}_duplicate{splitPath.ext}")
             moveFile(fmt"{originalPath}",
