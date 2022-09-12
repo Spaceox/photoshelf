@@ -10,7 +10,7 @@ workingDir = "working/"
 duplicateDir = "dupes/"
 skippedFileTypes = [".db", ".json", ".info"]  # These files are skipped
 
-shelf.setEchoMore(True)
+shelf.setEchoMore(False)
 
 
 def getDate(image: IOBase) -> list[str]:
@@ -36,12 +36,12 @@ def getDate(image: IOBase) -> list[str]:
                     shelf.niceishLogText(
                         f"DateTimeOriginal doesn't exist in {image}, using with DateTime."
                     )
-                    return list(exif["Exif.Photo.DateTime"].split(" ")[0].split(":"))
+                    return list(exif["Exif.Image.DateTime"].split(" ")[0].split(":"))
                 else:
                     if (
-                        "Exif.Image.DateTimeDigitized" in exif
-                        and exif["Exif.Image.DateTimeDigitized"] != ""
-                        and exif["Exif.Image.DateTimeDigitized"]
+                        "Exif.Photo.DateTimeDigitized" in exif
+                        and exif["Exif.Photo.DateTimeDigitized"] != ""
+                        and exif["Exif.Photo.DateTimeDigitized"]
                         != "0000:00:00 00:00:00"
                     ):
 
